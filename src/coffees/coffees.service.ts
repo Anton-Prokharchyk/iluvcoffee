@@ -1,9 +1,9 @@
 import {
-  HttpException,
-  HttpStatus,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { Coffee } from './entities/coffee.entity';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
@@ -38,7 +38,7 @@ export class CoffeesService {
       (c) => c.name === createCoffeeDto.name,
     );
     if (existingCoffee) {
-      throw new HttpException('Coffee already exists', HttpStatus.CONFLICT);
+      throw new ConflictException('Coffee already exists');
     }
     const newCoffee = { ...createCoffeeDto, id: Date.now().toString() };
     this.coffees.push(newCoffee);
@@ -48,18 +48,9 @@ export class CoffeesService {
   update(id: string, updateCoffeeDto: UpdateCoffeeDto): Coffee {
     const coffee: Coffee = this.findOne(id);
     if (!coffee) {
-      throw new HttpException('Coffee not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Coffee not found');
     }
-    let updatedCoffee: Coffee;
-    if (!updateCoffeeDto.flavors) {
-      updatedCoffee = { ...coffee, ...updateCoffeeDto };
-    } else {
-      updatedCoffee = {
-        ...coffee,
-        ...updateCoffeeDto,
-        flavors: [...updateCoffeeDto.flavors, ...coffee.flavors],
-      };
-    }
+    const updatedCoffee: Coffee = { ...coffee, ...updateCoffeeDto };
     const index = this.coffees.findIndex((c) => c.id === id);
     this.coffees[index] = updatedCoffee;
     return updatedCoffee;
@@ -68,7 +59,7 @@ export class CoffeesService {
   remove(id: string): Coffee {
     const coffee: Coffee = this.findOne(id);
     if (!coffee) {
-      throw new HttpException('Coffee not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Coffee not found');
     }
     this.coffees = this.coffees.filter((c) => c.id !== id);
     return coffee;
