@@ -16,6 +16,7 @@ import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { UuidValidationPipe } from 'src/common/pipes/parse-int/uuid-validation.pipe';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -28,7 +29,7 @@ export class CoffeesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', UuidValidationPipe) id: string) {
     return this.coffeesService.findOne(id);
   }
 
@@ -42,12 +43,15 @@ export class CoffeesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateCoffeeDto) {
+  update(
+    @Param('id', UuidValidationPipe) id: string,
+    @Body() body: UpdateCoffeeDto,
+  ) {
     return this.coffeesService.update(id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', UuidValidationPipe) id: string) {
     return this.coffeesService.remove(id);
   }
 }
