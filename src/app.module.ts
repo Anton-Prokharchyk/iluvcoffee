@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './coffees/coffees.module';
-import { TypeOrmModuleOptions } from 'ormconfig';
-import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '../ormconfig';
 import { CommonModule } from './common/common/common.module';
 
 @Module({
